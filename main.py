@@ -1,12 +1,14 @@
 from pprint import pprint
 from geopy import distance
 from flask import Flask
+from dotenv import load_dotenv
 import json
 import os
 import requests
 import folium
 
 
+load_dotenv()
 
 def fetch_coordinates(apikey, address):
   base_url = "https://geocode-maps.yandex.ru/1.x"
@@ -54,7 +56,7 @@ def min_distance(coffee):
 
 sorted_coffee_shops = sorted(coffee_houses, key=min_distance)
 
-m = folium.Map(location=list(user_coords), zoom_start=12, tiles="Stamen Terrain")
+m = folium.Map(location=list(user_coords), zoom_start=600, tiles="Stamen Terrain")
 
 for cafe in sorted_coffee_shops[:5]:
     coords_cafe = []
@@ -70,10 +72,10 @@ for cafe in sorted_coffee_shops[:5]:
 
 m.save("кофейни.html")
 
-def hello_world():
+def rendor_html():
    with open('кофейни.html') as file:
       return file.read()
 
 app = Flask(__name__)
-app.add_url_rule('/', 'Кофейни', hello_world)
+app.add_url_rule('/', 'Кофейни', rendor_html)
 app.run('0.0.0.0')
