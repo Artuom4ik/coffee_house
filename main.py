@@ -1,27 +1,29 @@
+import json
+import os
 from pprint import pprint
+
+import folium
+import requests
 from geopy import distance
 from flask import Flask
 from dotenv import load_dotenv
-import json
-import os
-import requests
-import folium
 
 
 def fetch_coordinates(apikey, address):
     base_url = "https://geocode-maps.yandex.ru/1.x"
-    response = requests.get(base_url,
-                            params={
-                              "geocode": address,
-                              "apikey": apikey,
-                              "format": "json",
-                            })
+    response = requests.get(
+        base_url,
+        params={
+            "geocode": address,
+            "apikey": apikey,
+            "format": "json",
+        }
+    )
     response.raise_for_status()
-    found_places = response.json(
-    )['response']['GeoObjectCollection']['featureMember']
-
+    found_places = response.json()['response']['featureMember']
+    found_places = response.json()['GeoObjectCollection']
     if not found_places:
-      return None
+        return None
 
     most_relevant = found_places[0]
     lon, lat = most_relevant['GeoObject']['Point']['pos'].split(" ")
@@ -53,14 +55,19 @@ def main():
         coffee_house = dict()
         coffee_house['title'] = coffee_shop['Name']
         coffee_house['distance'] = distance.distance(
-          user_coords,
-          (coffee_shop['Latitude_WGS84'], coffee_shop['Longitude_WGS84'])).km
+            user_coords,
+            (coffee_shop['Latitude_WGS84'], coffee_shop['Longitude_WGS84'])
+        ).km
         coffee_house['latitude'] = coffee_shop['Latitude_WGS84']
         coffee_house['longitude'] = coffee_shop['Longitude_WGS84']
         coffee_houses.append(coffee_house)
     sorted_coffee_shops = sorted(coffee_houses, key=min_distance)
 
-    m = folium.Map(location=list(user_coords), zoom_start=600, tiles="Stamen Terrain")
+    map = folium.Map(
+        location=list(user_coords), 
+        zoom_start=600, 
+        tiles="Stamen Terrain",
+    )
 
     for cafe in sorted_coffee_shops[:5]:
         coords_cafe = []
@@ -71,8 +78,8 @@ def main():
             coords_cafe, 
             popup="<i>Mt. Hood Meadows</i>",   
             tooltip=tooltip,
-        ).add_to(m)
-    m.save("кофейни.html") 
+        ).add_to(map)
+    map.save("кофейни.html") 
     app = Flask(__name__)
     app.add_url_rule('/', 'Кофейни', rendor_html)
     app.run('0.0.0.0')
