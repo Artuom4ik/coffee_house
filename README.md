@@ -5,12 +5,12 @@
  * операционная система linux, windows 7 или выше.
  * установить все нужные библиотеки Python командой:
 ```
-	 pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 ### Как запустить программу:
 * запустить программу с помощью команды:
 ```
-	python main.py
+python main.py
 ```
 ### Цель проекта:
 * Код написан в образовательных целях 
