@@ -42,11 +42,10 @@ def main():
     coffee_houses = []
     load_dotenv()
     with open("coffee.json", "r", encoding="CP1251") as my_file:
-        file_contents = my_file.read()
-        coffee_shops = json.load(file_contents)
+        coffee_shops = json.load(my_file)
 
     user_address = input('Где вы находитесь? ')
-    apikey = os.environ['APIkey']
+    apikey = os.getenv('APIkey')
     user_coords = fetch_coordinates(apikey, user_address)
     for coffee_shop in coffee_shops:
         coffee_house = dict()
