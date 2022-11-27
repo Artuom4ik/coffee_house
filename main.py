@@ -20,8 +20,7 @@ def fetch_coordinates(apikey, address):
         }
     )
     response.raise_for_status()
-    found_places = response.json()['response']['featureMember']
-    found_places = response.json()['GeoObjectCollection']
+    found_places = response.json()['response']['featureMember']['GeoObjectCollection']
     if not found_places:
         return None
 
@@ -40,17 +39,15 @@ def rendor_html():
 
 
 def main():
+    coffee_houses = []
     load_dotenv()
     with open("coffee.json", "r", encoding="CP1251") as my_file:
         file_contents = my_file.read()
-        coffee_shops = json.loads(file_contents)
+        coffee_shops = json.load(file_contents)
 
     user_address = input('Где вы находитесь? ')
     apikey = os.environ['APIkey']
     user_coords = fetch_coordinates(apikey, user_address)
-
-    coffee_houses = []
-
     for coffee_shop in coffee_shops:
         coffee_house = dict()
         coffee_house['title'] = coffee_shop['Name']
