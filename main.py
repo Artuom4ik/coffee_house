@@ -1,6 +1,6 @@
-import json
 import os
 from pprint import pprint
+import json
 
 import folium
 import requests
@@ -20,7 +20,7 @@ def fetch_coordinates(apikey, address):
         }
     )
     response.raise_for_status()
-    found_places = response.json()['response']['featureMember']['GeoObjectCollection']
+    found_places = response.json()['response']['GeoObjectCollection']['featureMember']
     if not found_places:
         return None
 
